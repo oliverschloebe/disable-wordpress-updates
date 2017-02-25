@@ -1,9 +1,9 @@
 === Disable All WordPress Updates ===
 Contributors: Alphawolf
-Donate link: http://www.schloebe.de/donate/
+Donate link: https://www.schloebe.de/donate/
 Tags: disable, updates, theme, core, auto-update
 Requires at least: 3.4
-Tested up to: 4.4.9999
+Tested up to: 4.7.9999
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -17,9 +17,9 @@ checking for updates including cronjobs, and prevents any notifications from bei
 
 This plugin combines und extends these three plugins:
 
-* [Disable WordPress Theme Update](http://wordpress.org/extend/plugins/disable-wordpress-theme-updates/)
-* [Disable WordPress Plugin Update](http://wordpress.org/extend/plugins/disable-wordpress-plugin-updates/)
-* [Disable WordPress Core Update](http://wordpress.org/extend/plugins/disable-wordpress-core-update/)
+* [Disable WordPress Theme Update](https://wordpress.org/extend/plugins/disable-wordpress-theme-updates/)
+* [Disable WordPress Plugin Update](https://wordpress.org/extend/plugins/disable-wordpress-plugin-updates/)
+* [Disable WordPress Core Update](https://wordpress.org/extend/plugins/disable-wordpress-core-update/)
 
 It's *very* important that you keep your WordPress theme, core and plugins up to date. If you don't, your blog or website could
 be **susceptible to security vulnerabilities** or performance issues.
@@ -56,6 +56,13 @@ None. :)
 
 
 == Changelog ==
+
+= 1.4.9 =
+* Peformance improvement (Thanks dominicp!)
+
+= 1.4.8 =
+* WordPress 4.7 compatibility
+* PHP 7 compatibility
 
 = 1.4.7 =
 * Fixed a PHP notice

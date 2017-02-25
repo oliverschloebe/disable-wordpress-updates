@@ -9,13 +9,13 @@
 /*
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
-Plugin URI:  http://wordpress.org/plugins/disable-wordpress-updates/
-Version:     1.4.7
+Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
+Version:     1.4.9
 Author:      Oliver Schlöbe
-Author URI:  http://www.schloebe.de/
+Author URI:  https://www.schloebe.de/
 License:	 GPL2
 
-Copyright 2013-2015 Oliver Schlöbe (email : scripts@schloebe.de)
+Copyright 2013-2017 Oliver Schlöbe (email : scripts@schloebe.de)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Define the plugin version
  */
-define("OSDWPUVERSION", "1.4.7");
+define("OSDWPUVERSION", "1.4.9");
 
 
 /**
@@ -66,11 +66,6 @@ class OS_Disable_WordPress_Updates {
 		$this->__themeFiles = array();
 		
 		add_action( 'admin_init', array(&$this, 'admin_init') );
-
-		if( !function_exists( 'get_plugins' ) ) require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		
-		if( count( get_plugins() ) > 0 ) foreach( get_plugins() as $file => $pl ) $this->__pluginsFiles[$file] = $pl['Version'];
-		if( count( wp_get_themes() ) > 0 ) foreach( wp_get_themes() as $theme ) $this->__themeFiles[$theme->get_stylesheet()] = $theme->get('Version');
 
 		/*
 		 * Disable Theme Updates
@@ -131,20 +126,6 @@ class OS_Disable_WordPress_Updates {
 		if( !defined( 'WP_AUTO_UPDATE_CORE') ) define( 'WP_AUTO_UPDATE_CORE', false );
 
 		add_filter( 'pre_http_request', array($this, 'block_request'), 10, 3 );
-	}
-
-
-	/**
-	 * The OS_Disable_WordPress_Updates class constructor
-	 * initializing required stuff for the plugin
-	 *
-	 * PHP 4 Compatible Constructor
-	 *
-	 * @since 		1.3
-	 * @author 		scripts@schloebe.de
-	 */
-	function OS_Disable_WordPress_Updates() {
-		$this->__construct();
 	}
 
 
@@ -282,6 +263,8 @@ class OS_Disable_WordPress_Updates {
 	public function last_checked_themes() {
 		global $wp_version;
 
+		if( count( wp_get_themes() ) > 0 ) foreach( wp_get_themes() as $theme ) $this->__themeFiles[$theme->get_stylesheet()] = $theme->get('Version');
+
 		return (object) array(
 			'last_checked'		=> time(),
 			'updates'			=> array(),
@@ -298,6 +281,9 @@ class OS_Disable_WordPress_Updates {
 	public function last_checked_plugins() {
 		global $wp_version;
 
+		if( !function_exists( 'get_plugins' ) ) require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		if( count( get_plugins() ) > 0 ) foreach( get_plugins() as $file => $pl ) $this->__pluginsFiles[$file] = $pl['Version'];
+		
 		return (object) array(
 			'last_checked'		=> time(),
 			'updates'			=> array(),
