@@ -57,8 +57,11 @@ None. :)
 
 == Changelog ==
 
+= 1.5.0 =
+* Performance improvements (Thanks jneto81!)
+
 = 1.4.9 =
-* Peformance improvement (Thanks dominicp!)
+* Performance improvements (Thanks dominicp!)
 
 = 1.4.8 =
 * WordPress 4.7 compatibility
