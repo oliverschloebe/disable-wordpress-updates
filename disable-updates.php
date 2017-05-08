@@ -10,7 +10,7 @@
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
-Version:     1.5.0
+Version:     1.6.0
 Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
 License:	 GPL2
@@ -37,7 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Define the plugin version
  */
-define("OSDWPUVERSION", "1.5.0");
+define("OSDWPUVERSION", "1.6.0");
 
 
 /**
@@ -49,9 +49,6 @@ define("OSDWPUVERSION", "1.5.0");
  * @author 		scripts@schloebe.de
  */
 class OS_Disable_WordPress_Updates {
-	private $__pluginsFiles;
-	private $__themeFiles;
-
 	/**
 	 * The OS_Disable_WordPress_Updates class constructor
 	 * initializing required stuff for the plugin
@@ -62,42 +59,47 @@ class OS_Disable_WordPress_Updates {
 	 * @author 		scripts@schloebe.de
 	 */
 	function __construct() {
-		$this->__pluginsFiles = array();
-		$this->__themeFiles = array();
-		
 		add_action( 'admin_init', array(&$this, 'admin_init') );
 
 		/*
 		 * Disable Theme Updates
 		 * 2.8 to 3.0
 		 */
-		add_filter( 'pre_transient_update_themes', array($this, 'last_checked_themes') );
+		add_filter( 'pre_transient_update_themes', array($this, 'last_checked_atm') );
 		/*
 		 * 3.0
 		 */
-		add_filter( 'pre_site_transient_update_themes', array($this, 'last_checked_themes') );
+		add_filter( 'pre_site_transient_update_themes', array($this, 'last_checked_atm') );
 
 
 		/*
 		 * Disable Plugin Updates
 		 * 2.8 to 3.0
 		 */
-		add_action( 'pre_transient_update_plugins', array(&$this, 'last_checked_plugins') );
+		add_action( 'pre_transient_update_plugins', array($this, 'last_checked_atm') );
 		/*
 		 * 3.0
 		 */
-		add_filter( 'pre_site_transient_update_plugins', array($this, 'last_checked_plugins') );
+		add_filter( 'pre_site_transient_update_plugins', array($this, 'last_checked_atm') );
 
 
 		/*
 		 * Disable Core Updates
 		 * 2.8 to 3.0
 		 */
-		add_filter( 'pre_transient_update_core', array($this, 'last_checked_core') );
+		add_filter( 'pre_transient_update_core', array($this, 'last_checked_atm') );
 		/*
 		 * 3.0
 		 */
-		add_filter( 'pre_site_transient_update_core', array($this, 'last_checked_core') );
+		add_filter( 'pre_site_transient_update_core', array($this, 'last_checked_atm') );
+		
+		
+		/*
+		 * Filter schedule checks
+		 *
+		 * @link https://wordpress.org/support/topic/possible-performance-improvement/#post-8970451
+		 */
+		add_action('schedule_event', array($this, 'filter_cron_events'));
 
 
 		/*
@@ -146,14 +148,6 @@ class OS_Disable_WordPress_Updates {
 		remove_action( 'network_admin_notices', 'update_nag', 3 );
 		remove_action( 'admin_notices', 'maintenance_nag' );
 		remove_action( 'network_admin_notices', 'maintenance_nag' );
-		
-		
-		/*
-		 * Filter schedule checks
-		 * 
-		 * @link https://wordpress.org/support/topic/possible-performance-improvement/#post-8970451
-		 */
-		add_action('schedule_event', array($this, 'filter_cron_events'));
 		
 
 		/*
@@ -254,72 +248,32 @@ class OS_Disable_WordPress_Updates {
 	 * @since 		1.5.0
 	 */
 	public function filter_cron_events($event) {
-		$ignore = array(
-			'wp_version_check',
-			'wp_update_plugins',
-			'wp_update_themes',
-			'wp_maybe_auto_update'
-		);
-		
-		if( in_array($event->hook, $ignore) ) {
-			return false;
+		switch( $event->hook ) {
+			case 'wp_version_check':
+			case 'wp_update_plugins':
+			case 'wp_update_themes':
+			case 'wp_update_themes':
+				$event = false;
+				break;
 		}
-		
 		return $event;
 	}
 	
-
-
+	
 	/**
-	 * Override core version check info
+	 * Override version check info
 	 *
-	 * @since 		1.4.3
+	 * @since 		1.6.0
 	 */
-	public function last_checked_core() {
-		global $wp_version;
+	public function last_checked_atm( $t ) {
+		include( ABSPATH . WPINC . '/version.php' );
 		
-		return (object) array(
-			'last_checked'		=> time(),
-			'updates'			=> array(),
-			'version_checked'	=> $wp_version
-		);
-	}
-
-	/**
-	 * Override themes version check info
-	 *
-	 * @since 		1.4.3
-	 */
-	public function last_checked_themes() {
-		global $wp_version;
-
-		if( count( wp_get_themes() ) > 0 ) foreach( wp_get_themes() as $theme ) $this->__themeFiles[$theme->get_stylesheet()] = $theme->get('Version');
-
-		return (object) array(
-			'last_checked'		=> time(),
-			'updates'			=> array(),
-			'version_checked'	=> $wp_version,
-			'checked'			=> $this->__themeFiles
-		);
-	}
-
-	/**
-	 * Override plugins version check info
-	 *
-	 * @since 		1.4.3
-	 */
-	public function last_checked_plugins() {
-		global $wp_version;
-
-		if( !function_exists( 'get_plugins' ) ) require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		if( count( get_plugins() ) > 0 ) foreach( get_plugins() as $file => $pl ) $this->__pluginsFiles[$file] = $pl['Version'];
+		$current = new stdClass;
+		$current->updates = array();
+		$current->version_checked = $wp_version;
+		$current->last_checked = time();
 		
-		return (object) array(
-			'last_checked'		=> time(),
-			'updates'			=> array(),
-			'version_checked'	=> $wp_version,
-			'checked'			=> $this->__pluginsFiles
-		);
+		return $current;
 	}
 }
 

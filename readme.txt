@@ -57,6 +57,9 @@ None. :)
 
 == Changelog ==
 
+= 1.6.0 =
+* Performance improvements (Thanks again jneto81!)
+
 = 1.5.0 =
 * Performance improvements (Thanks jneto81!)
 
