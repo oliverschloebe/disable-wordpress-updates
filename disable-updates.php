@@ -139,7 +139,9 @@ class OS_Disable_WordPress_Updates {
 	 */
 	function admin_init() {
 		if ( !function_exists("remove_action") ) return;
-		
+
+		global $current_user;
+		$current_user->allcaps['update_plugins'] = false;
 		
 		/*
 		 * Hide maintenance and update nag
