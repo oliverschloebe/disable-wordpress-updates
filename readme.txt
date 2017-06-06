@@ -3,7 +3,7 @@ Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
 Tags: disable, updates, theme, core, auto-update
 Requires at least: 3.4
-Tested up to: 4.7.9999
+Tested up to: 4.8.9999
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -56,6 +56,9 @@ None. :)
 
 
 == Changelog ==
+
+= 1.6.1 =
+* Remove 'update plugins' option from bulk operations select list (Thanks goruha!)
 
 = 1.6.0 =
 * Performance improvements (Thanks again jneto81!)
