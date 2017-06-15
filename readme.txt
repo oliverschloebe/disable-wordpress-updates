@@ -57,6 +57,9 @@ None. :)
 
 == Changelog ==
 
+= 1.6.2 =
+* Performance improvements (Thanks again jneto81!)
+
 = 1.6.1 =
 * Remove 'update plugins' option from bulk operations select list (Thanks goruha!)
 
