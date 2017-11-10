@@ -3,7 +3,7 @@ Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
 Tags: disable, updates, theme, core, auto-update
 Requires at least: 3.4
-Tested up to: 4.8.9999
+Tested up to: 4.9.9999
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
