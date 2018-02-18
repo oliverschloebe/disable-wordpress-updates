@@ -57,6 +57,9 @@ None. :)
 
 == Changelog ==
 
+= 1.6.3 =
+* PHP 7.2 compatibility (Thanks catmaniax!)
+
 = 1.6.2 =
 * Performance improvements (Thanks again jneto81!)
 
