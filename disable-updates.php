@@ -10,12 +10,12 @@
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
-Version:     1.6.3
+Version:     1.6.5
 Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
 License:	 GPL2
 
-Copyright 2013-2018 Oliver Schlöbe (email : scripts@schloebe.de)
+Copyright 2013-2019 Oliver Schlöbe (email : scripts@schloebe.de)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Define the plugin version
  */
-define("OSDWPUVERSION", "1.6.3");
+define("OSDWPUVERSION", "1.6.5");
 
 
 /**
@@ -100,7 +100,9 @@ class OS_Disable_WordPress_Updates {
 		 * @link https://wordpress.org/support/topic/possible-performance-improvement/#post-8970451
 		 */
 		add_action('schedule_event', array($this, 'filter_cron_events'));
-
+		
+		add_action( 'pre_set_site_transient_update_plugins', array($this, 'last_checked_atm'), 21, 1 );
+		add_action( 'pre_set_site_transient_update_themes', array($this, 'last_checked_atm'), 21, 1 );
 
 		/*
 		 * Disable All Automatic Updates
@@ -121,7 +123,6 @@ class OS_Disable_WordPress_Updates {
 		add_filter( 'auto_update_theme', '__return_false' );
 		add_filter( 'automatic_updates_send_debug_email', '__return_false' );
 		add_filter( 'automatic_updates_is_vcs_checkout', '__return_true' );
-
 
 		add_filter( 'automatic_updates_send_debug_email ', '__return_false', 1 );
 		if( !defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) define( 'AUTOMATIC_UPDATER_DISABLED', true );
@@ -238,7 +239,7 @@ class OS_Disable_WordPress_Updates {
 		$url_data = parse_url( $url );
 
 		/* block request */
-		if( false !== stripos( $host, 'api.wordpress.org' ) && (false !== stripos( $url_data['path'], 'update-check' ) || false !== stripos( $url_data['path'], 'browse-happy' )) ) {
+		if( false !== stripos( $host, 'api.wordpress.org' ) && (false !== stripos( $url_data['path'], 'update-check' ) || false !== stripos( $url_data['path'], 'browse-happy' ) || false !== stripos( $url_data['path'], 'serve-happy' )) ) {
 			return true;
 		}
 

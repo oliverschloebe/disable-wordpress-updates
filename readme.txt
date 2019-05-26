@@ -3,7 +3,7 @@ Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
 Tags: disable, updates, theme, core, auto-update
 Requires at least: 3.4
-Tested up to: 4.9.9999
+Tested up to: 5.2.9999
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -15,21 +15,15 @@ Disables the theme, plugin and core update checking, the related cronjobs and no
 This plugin completely disables the theme, plugin and core update checking system in WordPress. The plugin prevents WordPress from
 checking for updates including cronjobs, and prevents any notifications from being displayed.
 
-This plugin combines und extends these three plugins:
-
-* [Disable WordPress Theme Update](https://wordpress.org/extend/plugins/disable-wordpress-theme-updates/)
-* [Disable WordPress Plugin Update](https://wordpress.org/extend/plugins/disable-wordpress-plugin-updates/)
-* [Disable WordPress Core Update](https://wordpress.org/extend/plugins/disable-wordpress-core-update/)
-
 It's *very* important that you keep your WordPress theme, core and plugins up to date. If you don't, your blog or website could
 be **susceptible to security vulnerabilities** or performance issues.
 
 If you use this plugin, make sure you keep yourself up to date with new releases of your active WordPress version, plugins
 and themes and update them as new versions are released (simply by deactivating this plugin for a short time).
 
-[Developer on Google+](https://plus.google.com/118074611982254715031 "Developer on Google+") | [Developer on Twitter](http://twitter.com/wpseek "Developer on Twitter")
+[Developer on Twitter](http://twitter.com/wpseek "Developer on Twitter")
 
-**Looking for more WordPress plugins? Visit [www.schloebe.de/portfolio/](http://www.schloebe.de/portfolio/)**
+**Looking for more WordPress plugins? Visit [www.schloebe.de/portfolio/](https://www.schloebe.de/portfolio/)**
 
 
 == Frequently Asked Questions ==
@@ -56,6 +50,9 @@ None. :)
 
 
 == Changelog ==
+
+= 1.6.5 =
+* Improved WordPress HTTP API level blocking of outgoing wordpress.org API checks (thanks tiennoub!)
 
 = 1.6.3 =
 * PHP 7.2 compatibility (Thanks catmaniax!)
