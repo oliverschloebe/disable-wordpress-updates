@@ -3,7 +3,7 @@ Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
 Tags: disable, updates, theme, core, auto-update
 Requires at least: 3.4
-Tested up to: 5.2.9999
+Tested up to: 5.3.9999
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -50,6 +50,9 @@ None. :)
 
 
 == Changelog ==
+
+= 1.6.6 =
+* WordPress 5.3 compatibility
 
 = 1.6.5 =
 * Improved WordPress HTTP API level blocking of outgoing wordpress.org API checks (thanks tiennoub!)
