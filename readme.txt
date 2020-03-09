@@ -3,10 +3,10 @@ Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
 Tags: disable, updates, theme, core, auto-update
 Requires at least: 3.4
-Tested up to: 5.3.9999
+Tested up to: 5.4.9999
 Stable tag: trunk
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 
@@ -21,7 +21,7 @@ be **susceptible to security vulnerabilities** or performance issues.
 If you use this plugin, make sure you keep yourself up to date with new releases of your active WordPress version, plugins
 and themes and update them as new versions are released (simply by deactivating this plugin for a short time).
 
-[Developer on Twitter](http://twitter.com/wpseek "Developer on Twitter")
+[Developer on Twitter](https://twitter.com/wpseek "Developer on Twitter")
 
 **Looking for more WordPress plugins? Visit [www.schloebe.de/portfolio/](https://www.schloebe.de/portfolio/)**
 
