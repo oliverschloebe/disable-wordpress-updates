@@ -1,7 +1,7 @@
 === Disable All WordPress Updates ===
 Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
-Tags: disable, updates, theme, core, auto-update
+Tags: disable, updates, theme, core, auto-update, update-check, version-check, browse-happy, serve-happy
 Requires at least: 3.4
 Tested up to: 5.5.9999
 Stable tag: trunk
@@ -50,6 +50,9 @@ None. :)
 
 
 == Changelog ==
+
+= 1.6.7 =
+* Improved WordPress HTTP API level blocking of outgoing wordpress.org API checks (thanks luizkill!)
 
 = 1.6.6 =
 * WordPress 5.3 compatibility
