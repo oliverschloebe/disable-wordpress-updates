@@ -237,6 +237,10 @@ class OS_Disable_WordPress_Updates {
 		}
 
 		$url_data = parse_url( $url );
+		
+		if( !array_key_exists( 'path', $url_data ) ) {
+			return $pre;
+		}
 
 		/* block request */
 		if( false !== stripos( $host, 'api.wordpress.org' ) && (false !== stripos( $url_data['path'], 'update-check' ) || false !== stripos( $url_data['path'], 'version-check' ) || false !== stripos( $url_data['path'], 'browse-happy' ) || false !== stripos( $url_data['path'], 'serve-happy' )) ) {
