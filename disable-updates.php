@@ -15,7 +15,7 @@ Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
 License:	 GPL2
 
-Copyright 2013-2020 Oliver Schlöbe (email : scripts@schloebe.de)
+Copyright 2013-2021 Oliver Schlöbe (email : scripts@schloebe.de)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
