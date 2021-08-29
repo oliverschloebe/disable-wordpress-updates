@@ -10,12 +10,12 @@
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
-Version:     1.6.7
+Version:     1.6.8
 Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
 License:	 GPL2
 
-Copyright 2013-2021 Oliver Schlöbe (email : scripts@schloebe.de)
+Copyright 2013-2021 Oliver Schlöbe (email : wordpress@schloebe.de)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Define the plugin version
  */
-define("OSDWPUVERSION", "1.6.7");
+define("OSDWPUVERSION", "1.6.8");
 
 
 /**
@@ -124,6 +124,9 @@ class OS_Disable_WordPress_Updates {
 		add_filter( 'automatic_updates_send_debug_email', '__return_false' );
 		add_filter( 'automatic_updates_is_vcs_checkout', '__return_true' );
 
+		remove_action( 'init', 'wp_schedule_update_checks' );
+		remove_all_filters( 'plugins_api' );
+
 		add_filter( 'automatic_updates_send_debug_email ', '__return_false', 1 );
 		if( !defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) define( 'AUTOMATIC_UPDATER_DISABLED', true );
 		if( !defined( 'WP_AUTO_UPDATE_CORE') ) define( 'WP_AUTO_UPDATE_CORE', false );
@@ -150,6 +153,7 @@ class OS_Disable_WordPress_Updates {
 		/*
 		 * Hide maintenance and update nag
 		 */
+		add_filter( 'site_status_tests', array($this, 'site_status_tests') );
 		remove_action( 'admin_notices', 'update_nag', 3 );
 		remove_action( 'network_admin_notices', 'update_nag', 3 );
 		remove_action( 'admin_notices', 'maintenance_nag' );
@@ -215,9 +219,22 @@ class OS_Disable_WordPress_Updates {
 		remove_action( 'admin_init', 'wp_maybe_auto_update' );
 		remove_action( 'admin_init', 'wp_auto_update_core' );
 		wp_clear_scheduled_hook( 'wp_maybe_auto_update' );
+		
+		remove_all_filters( 'plugins_api' );
 	}
 
 
+
+	/**
+	 * Hide update checks in the Site Health screen
+	 *
+	 * @since 		1.6.8
+	 */
+	public function site_status_tests($tests) {
+		unset( $tests['async']['background_updates'] );
+		unset( $tests['direct']['plugin_theme_auto_updates'] );
+		return $tests;
+	}
 
 
 	/**
@@ -285,4 +302,3 @@ class OS_Disable_WordPress_Updates {
 if ( class_exists('OS_Disable_WordPress_Updates') ) {
 	$OS_Disable_WordPress_Updates = new OS_Disable_WordPress_Updates();
 }
-?>

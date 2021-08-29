@@ -8,14 +8,14 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Disables the theme, plugin and core update checking, the related cronjobs and notification system.
+Disables the theme, plugin and core update checking, the related cronjobs, plugin/theme update health checks and notification system.
 
 == Description ==
 
 This plugin completely disables the theme, plugin and core update checking system in WordPress. The plugin prevents WordPress from
 checking for updates including cronjobs, and prevents any notifications from being displayed.
 
-It's *very* important that you keep your WordPress theme, core and plugins up to date. If you don't, your blog or website could
+It's *very* important that you keep your WordPress theme, core and plugins up to date! If you don't, your blog or website could
 be **susceptible to security vulnerabilities** or performance issues.
 
 If you use this plugin, make sure you keep yourself up to date with new releases of your active WordPress version, plugins
@@ -50,6 +50,9 @@ None. :)
 
 
 == Changelog ==
+
+= 1.6.8 =
+* Disable plugin/theme update site health checks (thanks lucha!)
 
 = 1.6.7 =
 * Improved WordPress HTTP API level blocking of outgoing wordpress.org API checks (thanks luizkill!)
