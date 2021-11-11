@@ -10,9 +10,11 @@
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
-Version:     1.6.8
+Version:     1.7.0
 Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
+Text Domain: disable-wordpress-updates
+Domain Path: /languages
 License:	 GPL2
 
 Copyright 2013-2021 Oliver Schlöbe (email : wordpress@schloebe.de)
@@ -37,7 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Define the plugin version
  */
-define("OSDWPUVERSION", "1.6.8");
+define("OSDWPUVERSION", "1.7.0");
 
 
 /**
@@ -143,6 +145,11 @@ class OS_Disable_WordPress_Updates {
 	 */
 	function admin_init() {
 		if ( !function_exists("remove_action") ) return;
+
+		if ( current_user_can( 'update_core' ) ) {
+			add_action( 'admin_bar_menu', array($this, 'add_adminbar_items'), 100 );
+			add_action( 'admin_enqueue_scripts', array($this, 'admin_css_overrides') );
+		}
 		
 		/*
 		 * Remove 'update plugins' option from bulk operations select list
@@ -234,6 +241,42 @@ class OS_Disable_WordPress_Updates {
 		unset( $tests['async']['background_updates'] );
 		unset( $tests['direct']['plugin_theme_auto_updates'] );
 		return $tests;
+	}
+
+
+
+	/**
+	 * Add notice to admin bar when plugin is active
+	 *
+	 * @since 		1.7.0
+	 */
+	public function add_adminbar_items($admin_bar) {
+		$plugin_data = get_plugin_data( __FILE__ );
+
+		$admin_bar->add_menu( array(
+			'id'    => 'dwuos-notice',
+			'title' => '<span class="dashicons dashicons-info" aria-hidden="true"></span>',
+			'href'  => network_admin_url('plugins.php'),
+			'meta'  => array(
+				'class' => 'wp-admin-bar-dwuos-notice',
+				'title' => sprintf(
+					/* translators: %s: Name of the plugin */
+					__( '"%s" plugin is enabled!', 'disable-wordpress-updates' ),
+					$plugin_data['Name']
+				)
+			),
+		));
+	}
+
+
+
+	/**
+	 * Apply CSS styles to admin bar notice
+	 *
+	 * @since 		1.7.0
+	 */
+	public function admin_css_overrides() {
+		wp_add_inline_style( 'admin-bar', '.wp-admin-bar-dwuos-notice { background-color: rgba(190, 0, 0, 0.4) !important; } .wp-admin-bar-dwuos-notice .dashicons { font-family: dashicons !important; }' );
 	}
 
 

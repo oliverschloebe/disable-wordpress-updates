@@ -2,7 +2,7 @@
 Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
 Tags: disable, updates, theme, core, auto-update, update-check, version-check, browse-happy, serve-happy
-Requires at least: 3.4
+Requires at least: 3.8
 Tested up to: 5.8.9999
 Stable tag: trunk
 License: GPLv2 or later
@@ -50,6 +50,9 @@ None. :)
 
 
 == Changelog ==
+
+= 1.7.0 =
+* Added admin bar notice when plugin is enabled to remember admins that WordPress updates are disabled (thanks zimisun!)
 
 = 1.6.8 =
 * Disable plugin/theme update site health checks (thanks lucha!)
