@@ -10,7 +10,7 @@
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
-Version:     1.7.0
+Version:     1.7.1
 Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
 Text Domain: disable-wordpress-updates
@@ -39,7 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Define the plugin version
  */
-define("OSDWPUVERSION", "1.7.0");
+define("OSDWPUVERSION", "1.7.1");
 
 
 /**
@@ -299,7 +299,12 @@ class OS_Disable_WordPress_Updates {
 		$url_data = parse_url( $url );
 
 		/* block request */
-		if( false !== stripos( $host, 'api.wordpress.org' ) && (false !== stripos( $url_data['path'], 'update-check' ) || false !== stripos( $url_data['path'], 'version-check' ) || false !== stripos( $url_data['path'], 'browse-happy' ) || false !== stripos( $url_data['path'], 'serve-happy' )) ) {
+		if( false !== stripos( $host, 'api.wordpress.org' ) &&
+		    isset( $url_data['path'] ) &&
+		    (false !== stripos( $url_data['path'], 'update-check' ) ||
+		     false !== stripos( $url_data['path'], 'version-check' ) ||
+		     false !== stripos( $url_data['path'], 'browse-happy' ) ||
+		     false !== stripos( $url_data['path'], 'serve-happy' )) ) {
 			return true;
 		}
 

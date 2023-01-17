@@ -3,7 +3,8 @@ Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
 Tags: disable, updates, theme, core, auto-update, update-check, version-check, browse-happy, serve-happy
 Requires at least: 3.8
-Tested up to: 6.9.9999
+Tested up to: 6.2
+Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -50,6 +51,9 @@ None. :)
 
 
 == Changelog ==
+
+= 1.7.1 =
+* Fixed PHP warnings (thanks TetsuyaXD!)
 
 = 1.7.0 =
 * Added admin bar notice when plugin is enabled to remember admins that WordPress updates are disabled (thanks zimisun!)
