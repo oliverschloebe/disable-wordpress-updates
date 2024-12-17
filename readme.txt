@@ -1,10 +1,10 @@
 === Disable All WordPress Updates ===
 Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
-Tags: disable, updates, theme, core, auto-update, update-check, version-check, browse-happy, serve-happy
+Tags: disable updates, update, theme, update control
 Requires at least: 3.8
-Tested up to: 6.4.99
-Requires PHP: 5.6
+Tested up to: 6.7.99
+Requires PHP: 7.4
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -22,7 +22,7 @@ be **susceptible to security vulnerabilities** or performance issues.
 If you use this plugin, make sure you keep yourself up to date with new releases of your active WordPress version, plugins
 and themes and update them as new versions are released (simply by deactivating this plugin for a short time).
 
-[Developer on Twitter](https://twitter.com/wpseek "Developer on Twitter")
+[Developer on X](https://twitter.com/wpseek "Developer on X")
 
 **Looking for more WordPress plugins? Visit [www.schloebe.de/portfolio/](https://www.schloebe.de/portfolio/)**
 
@@ -51,6 +51,9 @@ None. :)
 
 
 == Changelog ==
+
+= 1.8.0 =
+* WordPress 6.7 compatibility
 
 = 1.7.1 =
 * Fixed PHP warnings (thanks TetsuyaXD!)

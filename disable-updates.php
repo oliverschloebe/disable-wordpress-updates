@@ -10,14 +10,14 @@
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
-Version:     1.7.1
+Version:     1.8.0
 Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
 Text Domain: disable-wordpress-updates
 Domain Path: /languages
 License:	 GPL2
 
-Copyright 2013-2021 Oliver Schlöbe (email : wordpress@schloebe.de)
+Copyright 2013-2024 Oliver Schlöbe (email : wordpress@schloebe.de)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Define the plugin version
  */
-define("OSDWPUVERSION", "1.7.1");
+const OSDWPUVERSION = "1.8.0";
 
 
 /**
@@ -48,7 +48,7 @@ define("OSDWPUVERSION", "1.7.1");
  * @package 	WordPress_Plugins
  * @subpackage 	OS_Disable_WordPress_Updates
  * @since 		1.3
- * @author 		scripts@schloebe.de
+ * @author 		wordpress@schloebe.de
  */
 class OS_Disable_WordPress_Updates {
 	/**
@@ -58,7 +58,7 @@ class OS_Disable_WordPress_Updates {
 	 * PHP 5 Constructor
 	 *
 	 * @since 		1.3
-	 * @author 		scripts@schloebe.de
+	 * @author 		wordpress@schloebe.de
 	 */
 	function __construct() {
 		add_action( 'admin_init', array(&$this, 'admin_init') );
@@ -67,33 +67,33 @@ class OS_Disable_WordPress_Updates {
 		 * Disable Theme Updates
 		 * 2.8 to 3.0
 		 */
-		add_filter( 'pre_transient_update_themes', array($this, 'last_checked_atm') );
+		add_filter( 'pre_transient_update_themes', [$this, 'last_checked_atm'] );
 		/*
 		 * 3.0
 		 */
-		add_filter( 'pre_site_transient_update_themes', array($this, 'last_checked_atm') );
+		add_filter( 'pre_site_transient_update_themes', [$this, 'last_checked_atm'] );
 
 
 		/*
 		 * Disable Plugin Updates
 		 * 2.8 to 3.0
 		 */
-		add_action( 'pre_transient_update_plugins', array($this, 'last_checked_atm') );
+		add_action( 'pre_transient_update_plugins', [$this, 'last_checked_atm'] );
 		/*
 		 * 3.0
 		 */
-		add_filter( 'pre_site_transient_update_plugins', array($this, 'last_checked_atm') );
+		add_filter( 'pre_site_transient_update_plugins', [$this, 'last_checked_atm'] );
 
 
 		/*
 		 * Disable Core Updates
 		 * 2.8 to 3.0
 		 */
-		add_filter( 'pre_transient_update_core', array($this, 'last_checked_atm') );
+		add_filter( 'pre_transient_update_core', [$this, 'last_checked_atm'] );
 		/*
 		 * 3.0
 		 */
-		add_filter( 'pre_site_transient_update_core', array($this, 'last_checked_atm') );
+		add_filter( 'pre_site_transient_update_core', [$this, 'last_checked_atm'] );
 		
 		
 		/*
@@ -101,10 +101,10 @@ class OS_Disable_WordPress_Updates {
 		 *
 		 * @link https://wordpress.org/support/topic/possible-performance-improvement/#post-8970451
 		 */
-		add_action('schedule_event', array($this, 'filter_cron_events'));
+		add_action('schedule_event', [$this, 'filter_cron_events']);
 		
-		add_action( 'pre_set_site_transient_update_plugins', array($this, 'last_checked_atm'), 21, 1 );
-		add_action( 'pre_set_site_transient_update_themes', array($this, 'last_checked_atm'), 21, 1 );
+		add_action( 'pre_set_site_transient_update_plugins', [$this, 'last_checked_atm'], 21, 1 );
+		add_action( 'pre_set_site_transient_update_themes', [$this, 'last_checked_atm'], 21, 1 );
 
 		/*
 		 * Disable All Automatic Updates
@@ -133,7 +133,7 @@ class OS_Disable_WordPress_Updates {
 		if( !defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) define( 'AUTOMATIC_UPDATER_DISABLED', true );
 		if( !defined( 'WP_AUTO_UPDATE_CORE') ) define( 'WP_AUTO_UPDATE_CORE', false );
 
-		add_filter( 'pre_http_request', array($this, 'block_request'), 10, 3 );
+		add_filter( 'pre_http_request', [$this, 'block_request'], 10, 3 );
 	}
 
 
@@ -141,14 +141,14 @@ class OS_Disable_WordPress_Updates {
 	 * Initialize and load the plugin stuff
 	 *
 	 * @since 		1.3
-	 * @author 		scripts@schloebe.de
+	 * @author 		wordpress@schloebe.de
 	 */
 	function admin_init() {
 		if ( !function_exists("remove_action") ) return;
 
 		if ( current_user_can( 'update_core' ) ) {
-			add_action( 'admin_bar_menu', array($this, 'add_adminbar_items'), 100 );
-			add_action( 'admin_enqueue_scripts', array($this, 'admin_css_overrides') );
+			add_action( 'admin_bar_menu', [$this, 'add_adminbar_items'], 100 );
+			add_action( 'admin_enqueue_scripts', [$this, 'admin_css_overrides'] );
 		}
 		
 		/*
@@ -160,7 +160,7 @@ class OS_Disable_WordPress_Updates {
 		/*
 		 * Hide maintenance and update nag
 		 */
-		add_filter( 'site_status_tests', array($this, 'site_status_tests') );
+		add_filter( 'site_status_tests', [$this, 'site_status_tests'] );
 		remove_action( 'admin_notices', 'update_nag', 3 );
 		remove_action( 'network_admin_notices', 'update_nag', 3 );
 		remove_action( 'admin_notices', 'maintenance_nag' );
@@ -253,19 +253,19 @@ class OS_Disable_WordPress_Updates {
 	public function add_adminbar_items($admin_bar) {
 		$plugin_data = get_plugin_data( __FILE__ );
 
-		$admin_bar->add_menu( array(
-			'id'    => 'dwuos-notice',
+		$admin_bar->add_menu([
+			'id' => 'dwuos-notice',
 			'title' => '<span class="dashicons dashicons-info" aria-hidden="true"></span>',
-			'href'  => network_admin_url('plugins.php'),
-			'meta'  => array(
+			'href' => network_admin_url('plugins.php'),
+			'meta' => [
 				'class' => 'wp-admin-bar-dwuos-notice',
 				'title' => sprintf(
 					/* translators: %s: Name of the plugin */
-					__( '"%s" plugin is enabled!', 'disable-wordpress-updates' ),
+					__('"%s" plugin is enabled!', 'disable-wordpress-updates'),
 					$plugin_data['Name']
 				)
-			),
-		));
+			],
+		]);
 	}
 
 
@@ -336,10 +336,10 @@ class OS_Disable_WordPress_Updates {
 	 * @since 		1.6.0
 	 */
 	public function last_checked_atm( $t ) {
-		include( ABSPATH . WPINC . '/version.php' );
+		include ABSPATH . WPINC . '/version.php';
 		
 		$current = new stdClass;
-		$current->updates = array();
+		$current->updates = [];
 		$current->version_checked = $wp_version;
 		$current->last_checked = time();
 		
