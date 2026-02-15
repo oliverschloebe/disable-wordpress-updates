@@ -22,7 +22,7 @@ be **susceptible to security vulnerabilities** or performance issues.
 If you use this plugin, make sure you keep yourself up to date with new releases of your active WordPress version, plugins
 and themes and update them as new versions are released (simply by deactivating this plugin for a short time).
 
-[Developer on X](https://twitter.com/wpseek "Developer on X")
+[Developer on X](https://x.com/wpseek "Developer on X") [Developer on Bluesky](https://bsky.app/profile/cyberblitzbirne.bsky.social "Developer on Bluesky")
 
 **Looking for more WordPress plugins? Visit [www.schloebe.de/portfolio/](https://www.schloebe.de/portfolio/)**
 
@@ -51,6 +51,9 @@ None. :)
 
 
 == Changelog ==
+
+= 1.9.0 =
+* WordPress 6.9 compatibility
 
 = 1.8.0 =
 * WordPress 6.7 compatibility

@@ -10,14 +10,14 @@
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
-Version:     1.8.0
+Version:     1.9.0
 Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
 Text Domain: disable-wordpress-updates
 Domain Path: /languages
 License:	 GPL2
 
-Copyright 2013-2024 Oliver Schlöbe (email : wordpress@schloebe.de)
+Copyright 2013-2026 Oliver Schlöbe (email : wordpress@schloebe.de)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Define the plugin version
  */
-const OSDWPUVERSION = "1.8.0";
+const OSDWPUVERSION = "1.9.0";
 
 
 /**
@@ -60,8 +60,8 @@ class OS_Disable_WordPress_Updates {
 	 * @since 		1.3
 	 * @author 		wordpress@schloebe.de
 	 */
-	function __construct() {
-		add_action( 'admin_init', array(&$this, 'admin_init') );
+	public function __construct() {
+		add_action( 'admin_init', [&$this, 'admin_init'] );
 
 		/*
 		 * Disable Theme Updates
@@ -143,7 +143,7 @@ class OS_Disable_WordPress_Updates {
 	 * @since 		1.3
 	 * @author 		wordpress@schloebe.de
 	 */
-	function admin_init() {
+	public function admin_init() {
 		if ( !function_exists("remove_action") ) return;
 
 		if ( current_user_can( 'update_core' ) ) {
