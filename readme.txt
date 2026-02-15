@@ -3,7 +3,7 @@ Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
 Tags: disable updates, update, theme, update control
 Requires at least: 3.8
-Tested up to: 6.8.99
+Tested up to: 6.9.99
 Requires PHP: 7.4
 Stable tag: trunk
 License: GPLv2 or later
