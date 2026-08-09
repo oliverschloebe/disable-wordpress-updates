@@ -10,7 +10,7 @@
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
-Version:     2.0.0
+Version:     2.0.1
 Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
 Text Domain: disable-wordpress-updates
@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Define the plugin version
  */
-const OSDWPUVERSION = "2.0.0";
+const OSDWPUVERSION = "2.0.1";
 
 
 /**
@@ -71,33 +71,46 @@ class OS_Disable_WordPress_Updates {
 		 * Disable Theme Updates
 		 * 2.8 to 3.0
 		 */
-		add_filter( 'pre_transient_update_themes', [$this, 'last_checked_atm'] );
+		add_filter( 'pre_transient_update_themes', [__CLASS__, 'last_checked_atm'] );
 		/*
 		 * 3.0
 		 */
-		add_filter( 'pre_site_transient_update_themes', [$this, 'last_checked_atm'] );
+		add_filter( 'pre_site_transient_update_themes', [__CLASS__, 'last_checked_atm'] );
 
 
 		/*
 		 * Disable Plugin Updates
 		 * 2.8 to 3.0
 		 */
-		add_action( 'pre_transient_update_plugins', [$this, 'last_checked_atm'] );
+		add_action( 'pre_transient_update_plugins', [__CLASS__, 'last_checked_atm'] );
 		/*
 		 * 3.0
 		 */
-		add_filter( 'pre_site_transient_update_plugins', [$this, 'last_checked_atm'] );
+		add_filter( 'pre_site_transient_update_plugins', [__CLASS__, 'last_checked_atm'] );
 
+
+		/*
+		 * Security Mode detection: when enabled, WordPress core automatic
+		 * updates are restricted to minor / security releases instead of being
+		 * fully disabled (see includes/class-osdwp-security-mode.php).
+		 */
+		$security_mode = self::is_security_mode();
 
 		/*
 		 * Disable Core Updates
 		 * 2.8 to 3.0
+		 *
+		 * Skipped entirely in Security Mode: the empty-updates transient below
+		 * would otherwise prevent ANY core update offer (including minor and
+		 * security releases) from ever being discovered or applied.
 		 */
-		add_filter( 'pre_transient_update_core', [$this, 'last_checked_atm'] );
-		/*
-		 * 3.0
-		 */
-		add_filter( 'pre_site_transient_update_core', [$this, 'last_checked_atm'] );
+		if ( ! $security_mode ) {
+			add_filter( 'pre_transient_update_core', [__CLASS__, 'last_checked_atm'] );
+			/*
+			 * 3.0
+			 */
+			add_filter( 'pre_site_transient_update_core', [__CLASS__, 'last_checked_atm'] );
+		}
 		
 		
 		/*
@@ -105,10 +118,10 @@ class OS_Disable_WordPress_Updates {
 		 *
 		 * @link https://wordpress.org/support/topic/possible-performance-improvement/#post-8970451
 		 */
-		add_action('schedule_event', [$this, 'filter_cron_events']);
+		add_action( 'schedule_event', [__CLASS__, 'filter_cron_events'] );
 		
-		add_action( 'pre_set_site_transient_update_plugins', [$this, 'last_checked_atm'], 21, 1 );
-		add_action( 'pre_set_site_transient_update_themes', [$this, 'last_checked_atm'], 21, 1 );
+		add_action( 'pre_set_site_transient_update_plugins', [__CLASS__, 'last_checked_atm'], 21, 1 );
+		add_action( 'pre_set_site_transient_update_themes', [__CLASS__, 'last_checked_atm'], 21, 1 );
 
 		/*
 		 * Disable All Automatic Updates
@@ -117,7 +130,18 @@ class OS_Disable_WordPress_Updates {
 		 * @author	sLa NGjI's @ slangji.wordpress.com
 		 */
 		add_filter( 'auto_update_translation', '__return_false' );
-		add_filter( 'automatic_updater_disabled', '__return_true' );
+
+		/*
+		 * The automatic updater is only disabled when Security Mode is OFF.
+		 * Security Mode needs it to remain active so minor / security core
+		 * releases can be installed automatically (the allow_* filters in
+		 * class-osdwp-security-mode.php decide which releases qualify).
+		 */
+		if ( $security_mode ) {
+			add_filter( 'automatic_updater_disabled', '__return_false' );
+		} else {
+			add_filter( 'automatic_updater_disabled', '__return_true' );
+		}
 		add_filter( 'allow_minor_auto_core_updates', '__return_false' );
 		add_filter( 'allow_major_auto_core_updates', '__return_false' );
 		add_filter( 'allow_dev_auto_core_updates', '__return_false' );
@@ -130,14 +154,38 @@ class OS_Disable_WordPress_Updates {
 		add_filter( 'automatic_updates_send_debug_email', '__return_false' );
 		add_filter( 'automatic_updates_is_vcs_checkout', '__return_true' );
 
-		remove_action( 'init', 'wp_schedule_update_checks' );
+		/*
+		 * Core update checks (the version-check cron and the auto-update cron)
+		 * are only removed when Security Mode is OFF; Security Mode needs them
+		 * so minor / security core offers can be fetched and applied.
+		 */
+		if ( ! $security_mode ) {
+			remove_action( 'init', 'wp_schedule_update_checks' );
+		}
 		remove_all_filters( 'plugins_api' );
 
 		add_filter( 'automatic_updates_send_debug_email ', '__return_false', 1 );
-		if( !defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) define( 'AUTOMATIC_UPDATER_DISABLED', true );
-		if( !defined( 'WP_AUTO_UPDATE_CORE') ) define( 'WP_AUTO_UPDATE_CORE', false );
+		if ( $security_mode ) {
+			/*
+			 * Security Mode: keep the updater active and restrict core to
+			 * 'minor' (the allow_* filters then narrow it further to minor /
+			 * security releases only).
+			 */
+			if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) define( 'AUTOMATIC_UPDATER_DISABLED', false );
+			if ( ! defined( 'WP_AUTO_UPDATE_CORE' ) ) define( 'WP_AUTO_UPDATE_CORE', 'minor' );
+		} else {
+			if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) define( 'AUTOMATIC_UPDATER_DISABLED', true );
+			if ( ! defined( 'WP_AUTO_UPDATE_CORE' ) ) define( 'WP_AUTO_UPDATE_CORE', false );
+		}
 
-		add_filter( 'pre_http_request', [$this, 'block_request'], 10, 3 );
+		/*
+		 * Only block WordPress.org update-check requests when Security Mode is
+		 * OFF; the version check must be able to reach api.wordpress.org so it
+		 * can fetch minor / security core offers.
+		 */
+		if ( ! $security_mode ) {
+			add_filter( 'pre_http_request', [__CLASS__, 'block_request'], 10, 3 );
+		}
 	}
 
 
@@ -151,8 +199,8 @@ class OS_Disable_WordPress_Updates {
 		if ( !function_exists("remove_action") ) return;
 
 		if ( current_user_can( 'update_core' ) ) {
-			add_action( 'admin_bar_menu', [$this, 'add_adminbar_items'], 100 );
-			add_action( 'admin_enqueue_scripts', [$this, 'admin_css_overrides'] );
+			add_action( 'admin_bar_menu', [__CLASS__, 'add_adminbar_items'], 100 );
+			add_action( 'admin_enqueue_scripts', [__CLASS__, 'admin_css_overrides'] );
 		}
 		
 		/*
@@ -164,11 +212,13 @@ class OS_Disable_WordPress_Updates {
 		/*
 		 * Hide maintenance and update nag
 		 */
-		add_filter( 'site_status_tests', [$this, 'site_status_tests'] );
-		remove_action( 'admin_notices', 'update_nag', 3 );
-		remove_action( 'network_admin_notices', 'update_nag', 3 );
-		remove_action( 'admin_notices', 'maintenance_nag' );
-		remove_action( 'network_admin_notices', 'maintenance_nag' );
+		if ( ! self::is_security_mode() ) {
+			add_filter( 'site_status_tests', [__CLASS__, 'site_status_tests'] );
+			remove_action( 'admin_notices', 'update_nag', 3 );
+			remove_action( 'network_admin_notices', 'update_nag', 3 );
+			remove_action( 'admin_notices', 'maintenance_nag' );
+			remove_action( 'network_admin_notices', 'maintenance_nag' );
+		}
 		
 
 		/*
@@ -209,27 +259,33 @@ class OS_Disable_WordPress_Updates {
 		/*
 		 * Disable Core Updates
 		 * 2.8 to 3.0
+		 *
+		 * Skipped entirely in Security Mode so the version check and the
+		 * auto-update cron stay active and minor / security core releases can
+		 * be discovered and applied automatically.
 		 */
-		add_filter( 'pre_option_update_core', '__return_null' );
+		if ( ! self::is_security_mode() ) {
+			add_filter( 'pre_option_update_core', '__return_null' );
 
-		remove_action( 'wp_version_check', 'wp_version_check' );
-		remove_action( 'admin_init', '_maybe_update_core' );
-		wp_clear_scheduled_hook( 'wp_version_check' );
-
-
-		/*
-		 * 3.0
-		 */
-		wp_clear_scheduled_hook( 'wp_version_check' );
+			remove_action( 'wp_version_check', 'wp_version_check' );
+			remove_action( 'admin_init', '_maybe_update_core' );
+			wp_clear_scheduled_hook( 'wp_version_check' );
 
 
-		/*
-		 * 3.7+
-		 */
-		remove_action( 'wp_maybe_auto_update', 'wp_maybe_auto_update' );
-		remove_action( 'admin_init', 'wp_maybe_auto_update' );
-		remove_action( 'admin_init', 'wp_auto_update_core' );
-		wp_clear_scheduled_hook( 'wp_maybe_auto_update' );
+			/*
+			 * 3.0
+			 */
+			wp_clear_scheduled_hook( 'wp_version_check' );
+
+
+			/*
+			 * 3.7+
+			 */
+			remove_action( 'wp_maybe_auto_update', 'wp_maybe_auto_update' );
+			remove_action( 'admin_init', 'wp_maybe_auto_update' );
+			remove_action( 'admin_init', 'wp_auto_update_core' );
+			wp_clear_scheduled_hook( 'wp_maybe_auto_update' );
+		}
 		
 		remove_all_filters( 'plugins_api' );
 	}
@@ -254,7 +310,7 @@ class OS_Disable_WordPress_Updates {
 	 *
 	 * @since 		1.7.0
 	 */
-	public function add_adminbar_items($admin_bar) {
+	public static function add_adminbar_items($admin_bar) {
 		$plugin_data   = get_plugin_data( __FILE__ );
 		$sm_available  = class_exists( 'OSDWP_Security_Mode' );
 		$security_mode = $sm_available && (bool) get_option( OSDWP_Security_Mode::OPTION_NAME, false );
@@ -292,7 +348,7 @@ class OS_Disable_WordPress_Updates {
 	 *
 	 * @since 		1.7.0
 	 */
-	public function admin_css_overrides() {
+	public static function admin_css_overrides() {
 		wp_add_inline_style( 'admin-bar', '.wp-admin-bar-dwuos-notice { background-color: rgba(190, 0, 0, 0.4) !important; } .wp-admin-bar-dwuos-notice .dashicons { font-family: dashicons !important; }' );
 	}
 
@@ -302,7 +358,7 @@ class OS_Disable_WordPress_Updates {
 	 *
 	 * @since 		1.4.4
 	 */
-	public function block_request($pre, $args, $url) {
+	public static function block_request($pre, $args, $url) {
 		/* Empty url */
 		if( empty( $url ) ) {
 			return $pre;
@@ -330,11 +386,41 @@ class OS_Disable_WordPress_Updates {
 
 
 	/**
+	 * Whether the optional "Security Mode" (minor / security core auto-updates
+	 * only) is currently enabled.
+	 *
+	 * @since 		2.0.1
+	 *
+	 * @return bool
+	 */
+	public static function is_security_mode() {
+		return class_exists( 'OSDWP_Security_Mode' )
+			&& (bool) get_option( OSDWP_Security_Mode::OPTION_NAME, false );
+	}
+
+
+	/**
 	 * Filter cron events
 	 *
 	 * @since 		1.5.0
 	 */
-	public function filter_cron_events($event) {
+	public static function filter_cron_events($event) {
+		if ( self::is_security_mode() ) {
+			/*
+			 * Security Mode: the core version check and the auto-update cron
+			 * must be allowed so minor / security core releases can be
+			 * discovered and installed. Plugin and theme update crons stay
+			 * blocked (plugin/theme updates remain disabled regardless).
+			 */
+			switch( $event->hook ) {
+				case 'wp_update_plugins':
+				case 'wp_update_themes':
+					$event = false;
+					break;
+			}
+			return $event;
+		}
+
 		switch( $event->hook ) {
 			case 'wp_version_check':
 			case 'wp_update_plugins':
@@ -352,14 +438,18 @@ class OS_Disable_WordPress_Updates {
 	 *
 	 * @since 		1.6.0
 	 */
-	public function last_checked_atm( $t ) {
-		include ABSPATH . WPINC . '/version.php';
-		
+	public static function last_checked_atm( $t ) {
+		if ( function_exists( 'wp_get_wp_version' ) ) {
+			$wp_version = wp_get_wp_version();
+		} else {
+			include ABSPATH . WPINC . '/version.php';
+		}
+
 		$current = new stdClass;
 		$current->updates = [];
 		$current->version_checked = $wp_version;
 		$current->last_checked = time();
-		
+
 		return $current;
 	}
 }

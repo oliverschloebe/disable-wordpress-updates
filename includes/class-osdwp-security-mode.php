@@ -79,7 +79,7 @@ class OSDWP_Security_Mode {
 			$this->auto_update_core_external_value = WP_AUTO_UPDATE_CORE;
 		}
 
-		// 2) Register the three core auto-update filters only when enabled.
+		// 2) Register the core auto-update filters only when enabled.
 		//    This runs on every request (admin, front-end and wp-cron) at
 		//    plugin-load time, which is before WP_Automatic_Updater decides
 		//    what to install.
@@ -108,11 +108,17 @@ class OSDWP_Security_Mode {
 	}
 
 	/**
-	 * Register the three core auto-update filters that implement Security Mode.
+	 * Register the core auto-update filters that implement Security Mode.
 	 *
 	 * Priority 20 ensures these win over the base plugin's own allow_* filters
 	 * (registered at the default priority 10) and over the defaults derived from
 	 * the WP_AUTO_UPDATE_CORE constant.
+	 *
+	 * Note: this class is instantiated *before* the base plugin class, so it must
+	 * not try to remove_filter() things the base plugin registers in its own
+	 * constructor (that would be a no-op). Instead, the base plugin checks
+	 * is_security_mode() itself and skips registering its core-update-blocking
+	 * filters/actions entirely while Security Mode is active.
 	 *
 	 * Verification: when enabled, has_filter( 'allow_minor_auto_core_updates',
 	 * '__return_true' ) is truthy; when disabled it is false.
@@ -121,6 +127,11 @@ class OSDWP_Security_Mode {
 		add_filter( 'allow_minor_auto_core_updates', '__return_true', 20 );
 		add_filter( 'allow_major_auto_core_updates', '__return_false', 20 );
 		add_filter( 'allow_dev_auto_core_updates', '__return_false', 20 );
+		add_filter( 'auto_update_core', '__return_true', 20 );
+		add_filter( 'wp_auto_update_core', '__return_true', 20 );
+		add_filter( 'auto_core_update_send_email', '__return_true', 20 );
+		add_filter( 'send_core_update_notification_email', '__return_true', 20 );
+		add_filter( 'automatic_updates_is_vcs_checkout', '__return_false', 20 );
 	}
 
 	/**
