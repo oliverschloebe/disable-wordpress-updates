@@ -10,7 +10,7 @@
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
-Version:     1.9.1
+Version:     2.0.0
 Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
 Text Domain: disable-wordpress-updates
@@ -34,12 +34,16 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+// Don't load directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
 
 
 /**
  * Define the plugin version
  */
-const OSDWPUVERSION = "1.9.1";
+const OSDWPUVERSION = "2.0.0";
 
 
 /**
@@ -251,19 +255,32 @@ class OS_Disable_WordPress_Updates {
 	 * @since 		1.7.0
 	 */
 	public function add_adminbar_items($admin_bar) {
-		$plugin_data = get_plugin_data( __FILE__ );
+		$plugin_data   = get_plugin_data( __FILE__ );
+		$sm_available  = class_exists( 'OSDWP_Security_Mode' );
+		$security_mode = $sm_available && (bool) get_option( OSDWP_Security_Mode::OPTION_NAME, false );
+
+		// Link the admin-bar indicator straight to the plugin's settings page.
+		$settings_slug = $sm_available ? OSDWP_Security_Mode::PAGE_SLUG : 'osdwp-security-mode';
+		$settings_url  = admin_url( 'options-general.php?page=' . $settings_slug );
+
+		// Build the tooltip; add a note when Security Mode is on so the orange
+		// indicator (instead of red) is explained on hover.
+		$tooltip = sprintf(
+			/* translators: %s: Name of the plugin */
+			__('"%s" plugin is enabled! Click to manage update settings.', 'disable-wordpress-updates'),
+			$plugin_data['Name']
+		);
+		if ( $security_mode ) {
+			$tooltip .= ' ' . __( 'Security Mode enabled.', 'disable-wordpress-updates' );
+		}
 
 		$admin_bar->add_menu([
 			'id' => 'dwuos-notice',
 			'title' => '<span class="dashicons dashicons-info" aria-hidden="true"></span>',
-			'href' => network_admin_url('plugins.php'),
+			'href' => $settings_url,
 			'meta' => [
 				'class' => 'wp-admin-bar-dwuos-notice',
-				'title' => sprintf(
-					/* translators: %s: Name of the plugin */
-					__('"%s" plugin is enabled!', 'disable-wordpress-updates'),
-					$plugin_data['Name']
-				)
+				'title' => $tooltip,
 			],
 		]);
 	}
@@ -345,6 +362,20 @@ class OS_Disable_WordPress_Updates {
 		
 		return $current;
 	}
+}
+
+/*
+ * Load the optional "Security Mode" feature (core auto-update control).
+ *
+ * Instantiated BEFORE the main class on purpose: it needs to detect whether
+ * the WP_AUTO_UPDATE_CORE constant was already defined elsewhere (wp-config.php,
+ * a host panel, an mu-plugin, another plugin) before this plugin's own
+ * constructor defines it.
+ */
+require_once __DIR__ . '/includes/class-osdwp-security-mode.php';
+
+if ( class_exists( 'OSDWP_Security_Mode' ) ) {
+	$GLOBALS['osdwp_security_mode'] = new OSDWP_Security_Mode();
 }
 
 if ( class_exists('OS_Disable_WordPress_Updates') ) {

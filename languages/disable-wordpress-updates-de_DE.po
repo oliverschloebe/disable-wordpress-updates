@@ -3,9 +3,9 @@ msgstr ""
 "Project-Id-Version: Disable All WordPress Updates\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-11 15:32+0000\n"
-"PO-Revision-Date: 2021-11-11 16:32+0000\n"
+"PO-Revision-Date: 2026-08-09 12:52+0000\n"
 "Last-Translator: \n"
-"Language-Team: German\n"
+"Language-Team: Deutsch\n"
 "Language: de_DE\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
@@ -16,14 +16,26 @@ msgstr ""
 "X-Domain: disable-wordpress-updates"
 
 #. %s: Name of the plugin
-#: disable-updates.php:264
+#: disable-updates.php:266
 #, php-format
-msgid "\"%s\" plugin is enabled!"
-msgstr "Das \"%s\"-Plugin ist akiviert!"
+msgid "\"%s\" plugin is enabled! Click to manage update settings."
+msgstr ""
+"Das „%s“-Plugin ist aktiviert! Klicke hier, um die Update-Einstellungen zu "
+"verwalten."
+
+#: includes/class-osdwp-security-mode.php:296
+msgid "all core updates"
+msgstr "alle Core-Updates"
 
 #. Name of the plugin
 msgid "Disable All WordPress Updates"
 msgstr "Disable All WordPress Updates"
+
+#: includes/class-osdwp-security-mode.php:131
+#: includes/class-osdwp-security-mode.php:132
+#: includes/class-osdwp-security-mode.php:238
+msgid "Disable Updates"
+msgstr "Updates deaktivieren"
 
 #. Description of the plugin
 msgid ""
@@ -33,6 +45,10 @@ msgstr ""
 "Deaktiviert die Theme-, Plugin- und Core-Updates, die zugehörigen Cronjobs "
 "und das Benachrichtigungssystem."
 
+#: includes/class-osdwp-security-mode.php:224
+msgid "Enable security updates only (block major updates)"
+msgstr "Nur Sicherheitsupdates zulassen (größere Updates blockieren)"
+
 #. URI of the plugin
 msgid "https://wordpress.org/plugins/disable-wordpress-updates/"
 msgstr "https://de.wordpress.org/plugins/disable-wordpress-updates/"
@@ -41,6 +57,96 @@ msgstr "https://de.wordpress.org/plugins/disable-wordpress-updates/"
 msgid "https://www.schloebe.de/"
 msgstr "https://www.schloebe.de/"
 
+#: includes/class-osdwp-security-mode.php:199
+msgid ""
+"Implemented with WordPress filters only — no wp-config.php edits. Plugin and "
+"theme auto-updates are not affected by this setting."
+msgstr ""
+"Wird ausschließlich über WordPress-Filter umgesetzt – keine Änderungen an "
+"der wp-config.php. Automatische Updates für Plugins und Themes sind von "
+"dieser Einstellung nicht betroffen."
+
+#: includes/class-osdwp-security-mode.php:302
+msgid "minor / security only"
+msgstr "nur kleine und Sicherheitsupdates"
+
+#: includes/class-osdwp-security-mode.php:299
+msgid "no core updates"
+msgstr "keine Core-Updates"
+
+#: includes/class-osdwp-security-mode.php:204
+msgid ""
+"Note: this setting controls which core releases are eligible for automatic "
+"updates. If the automatic updater is disabled site-wide (for example via the "
+"AUTOMATIC_UPDATER_DISABLED constant/filter, or by this plugin's own update-"
+"blocking features), that takes precedence and no core update will be applied "
+"automatically regardless of this toggle."
+msgstr ""
+"Hinweis: Diese Einstellung legt fest, welche Core-Versionen für automatische "
+"Updates in Frage kommen. Wenn der automatische Updater seitenweit "
+"deaktiviert ist (zum Beispiel über die Konstante/den Filter "
+"`AUTOMATIC_UPDATER_DISABLED` oder durch die eigenen Funktionen dieses "
+"Plugins zum Blockieren von Updates), hat das Vorrang und es wird unabhängig "
+"von dieser Umschaltfunktion kein Core-Update automatisch angewendet."
+
 #. Author of the plugin
 msgid "Oliver Schlöbe"
 msgstr "Oliver Schlöbe"
+
+#: includes/class-osdwp-security-mode.php:159
+msgid "Security Mode"
+msgstr "Sicherheitsmodus"
+
+#: disable-updates.php:270
+msgid "Security Mode enabled."
+msgstr "Sicherheitsmodus aktiviert."
+
+#: includes/class-osdwp-security-mode.php:328
+msgid ""
+"Security Mode is enabled: WordPress core automatic updates are restricted to "
+"minor and security releases. Major version updates are intentionally blocked."
+msgstr ""
+"Der Sicherheitsmodus ist aktiviert: Automatische Updates des WordPress-Cores "
+"sind auf Neben- und Sicherheitsupdates beschränkt. Updates auf neue "
+"Hauptversionen werden bewusst blockiert."
+
+#: includes/class-osdwp-security-mode.php:194
+msgid ""
+"Security Mode restricts WordPress core automatic updates to minor and "
+"security releases. Major version and development (nightly) core updates are "
+"blocked from being applied automatically."
+msgstr ""
+"Der Sicherheitsmodus beschränkt die automatischen Updates des WordPress-"
+"Cores auf Nebenversionen und Sicherheitsupdates. Die automatische "
+"Installation von Hauptversions- und Entwicklungs-Updates (Nightly-Updates) "
+"des Cores wird blockiert."
+
+#: includes/class-osdwp-security-mode.php:166
+msgid "Status"
+msgstr "Status"
+
+#. %s: WP_AUTO_UPDATE_CORE constant name wrapped in a <code> tag.
+#: includes/class-osdwp-security-mode.php:275
+#, php-format
+msgid ""
+"The %s constant is defined outside of this plugin (for example in wp-config."
+"php, a host panel, an mu-plugin or another plugin) with the following value:"
+msgstr ""
+"Die Konstante %s wird außerhalb dieses Plugins (zum Beispiel in wp-config."
+"php, einem Host-Panel, einem mu-Plugin oder einem anderen Plugin) mit dem "
+"folgenden Wert definiert:"
+
+#: includes/class-osdwp-security-mode.php:282
+msgid ""
+"This constant always overrides this plugin's filters, so the Security Mode "
+"toggle may have no effect. To rely on Security Mode, remove or adjust that "
+"constant definition."
+msgstr ""
+"Diese Konstante hat immer Vorrang vor den Filtern dieses Plugins, sodass der "
+"Schalter für den Sicherheitsmodus möglicherweise keine Wirkung zeigt. Wenn "
+"du dich auf den Sicherheitsmodus verlassen möchtest, entferne oder passe die "
+"Definition dieser Konstante an."
+
+#: includes/class-osdwp-security-mode.php:269
+msgid "WP_AUTO_UPDATE_CORE is defined elsewhere"
+msgstr "WP_AUTO_UPDATE_CORE ist an anderer Stelle definiert"
