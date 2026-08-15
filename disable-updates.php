@@ -10,7 +10,7 @@
 Plugin Name: Disable All WordPress Updates
 Description: Disables the theme, plugin and core update checking, the related cronjobs and notification system.
 Plugin URI:  https://wordpress.org/plugins/disable-wordpress-updates/
-Version:     2.0.1
+Version:     2.0.2
 Author:      Oliver Schlöbe
 Author URI:  https://www.schloebe.de/
 Text Domain: disable-wordpress-updates
@@ -43,7 +43,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Define the plugin version
  */
-const OSDWPUVERSION = "2.0.1";
+const OSDWPUVERSION = "2.0.2";
+
+
+add_action( 'init', 'osdwp_load_textdomain' );
+function osdwp_load_textdomain() {
+	load_plugin_textdomain(
+		'disable-wordpress-updates',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
 
 
 /**
@@ -297,7 +307,7 @@ class OS_Disable_WordPress_Updates {
 	 *
 	 * @since 		1.6.8
 	 */
-	public function site_status_tests($tests) {
+	public static function site_status_tests(array $tests) {
 		unset( $tests['async']['background_updates'] );
 		unset( $tests['direct']['plugin_theme_auto_updates'] );
 		return $tests;
@@ -310,7 +320,7 @@ class OS_Disable_WordPress_Updates {
 	 *
 	 * @since 		1.7.0
 	 */
-	public static function add_adminbar_items($admin_bar) {
+	public static function add_adminbar_items(WP_Admin_Bar $admin_bar) {
 		$plugin_data   = get_plugin_data( __FILE__ );
 		$sm_available  = class_exists( 'OSDWP_Security_Mode' );
 		$security_mode = $sm_available && (bool) get_option( OSDWP_Security_Mode::OPTION_NAME, false );

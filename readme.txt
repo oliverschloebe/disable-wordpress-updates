@@ -3,7 +3,7 @@ Contributors: Alphawolf
 Donate link: https://www.schloebe.de/donate/
 Tags: disable updates, update, theme, update control
 Requires at least: 3.8
-Tested up to: 7.0.99
+Tested up to: 7.1.99
 Requires PHP: 7.4
 Stable tag: trunk
 License: GPLv2 or later
@@ -54,6 +54,11 @@ None. :)
 
 
 == Changelog ==
+
+= 2.0.2 =
+* WordPress 7.1 compatibility
+* "Site Health" page fixes
+* Localization fixes
 
 = 2.0.1 =
 * "Security Mode" fixes
