@@ -50,10 +50,13 @@ are existing, simply deactive this plugin for a short time.
 
 == Screenshots ==
 
-None. :)
+None.
 
 
 == Changelog ==
+
+= 2.0.3 =
+* "Security Mode" fixes (thanks @jonkastonka)
 
 = 2.0.2 =
 * WordPress 7.1 compatibility

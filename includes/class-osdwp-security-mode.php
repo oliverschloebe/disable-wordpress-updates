@@ -127,7 +127,6 @@ class OSDWP_Security_Mode {
 		add_filter( 'allow_minor_auto_core_updates', '__return_true', 20 );
 		add_filter( 'allow_major_auto_core_updates', '__return_false', 20 );
 		add_filter( 'allow_dev_auto_core_updates', '__return_false', 20 );
-		add_filter( 'auto_update_core', '__return_true', 20 );
 		add_filter( 'wp_auto_update_core', '__return_true', 20 );
 		add_filter( 'auto_core_update_send_email', '__return_true', 20 );
 		add_filter( 'send_core_update_notification_email', '__return_true', 20 );
